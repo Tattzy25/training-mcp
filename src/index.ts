@@ -9,17 +9,52 @@ const FileCtor: unknown = (globalThis as unknown as { File?: unknown }).File;
 const fileLikeSchema =
   typeof FileCtor === "function" ? z.instanceof(FileCtor as any) : z.any();
 
-// Keep production logging quiet unless DEBUG is explicitly set.
-if (process.env.NODE_ENV !== "production") {
-  process.env.DEBUG ??= "mcp:*";
-}
-
 const app = express();
 app.use(express.json());
 
 const server = new McpServer({
   name: "Echo",
   version: "1.0.0"
+});
+
+const startedAt = Date.now();
+
+app.get("/health", async (req: Request, res: Response) => {
+  const checkUpstream = req.query.upstream === "1" || req.query.upstream === "true";
+  let upstream: { ok: boolean; status?: number; error?: string } | undefined;
+  const service =
+    process.env.npm_package_name ||
+    process.env.RAILWAY_SERVICE_NAME ||
+    "modelcontext-express";
+  const version = process.env.npm_package_version || "unknown";
+
+  if (checkUpstream) {
+    try {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 2500);
+      const r = await fetch(API_URL, { method: "GET", signal: controller.signal });
+      clearTimeout(timeout);
+      upstream = { ok: r.ok, status: r.status };
+    } catch (e) {
+      upstream = { ok: false, error: e instanceof Error ? e.message : String(e) };
+    }
+  }
+
+  res.status(200).json({
+    ok: true,
+    service,
+    version,
+    uptimeMs: Date.now() - startedAt,
+    timestamp: new Date().toISOString(),
+    upstream,
+  });
+});
+
+app.post("/upload-training", async (_req: Request, res: Response) => {
+  res.status(200).json({
+    success: true,
+    message: "Upload accepted",
+  });
 });
 
 // Register our capabilities
