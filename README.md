@@ -90,9 +90,9 @@ curl -X POST http://localhost:4000/mcp \
 ## Server customization
 
 ### Port
-If you want to run the MCP server on a different port, you can set the `MCP_SERVER_PORT` environment variable before starting the server. For example:
+If you want to run the server on a different port, set the `PORT` environment variable before starting the server. For example:
 ```
-export MCP_SERVER_PORT=4002
+export PORT=4002
 ```
 
 ### API url
@@ -114,7 +114,7 @@ If the project is not running as expected:
 4. Ensure the port (default: 4000) is not already in use by another application.
 5. Verify custom environment variables:
    ```bash
-   echo $MCP_SERVER_PORT
+   echo $PORT
    echo $MCP_API_URL
    ```
 6. If the issue persists, review the code in `src/index.ts` for potential misconfigurations or errors.

@@ -7,7 +7,8 @@
   "description": "model training mcp server",
   "scripts": {
     "dev": "node --loader ts-node/esm src/index.ts",
-    "start": "node index.js"
+    "build": "tsc -p tsconfig.build.json",
+    "start": "node dist/index.js"
   },
   "engines": {
     "node": ">=18.0.0"
@@ -19,12 +20,11 @@
     "typescript": "^5.2.2"
   },
   "files": [
-    "src"
+    "dist"
   ],
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.26.0",
     "express": "^5.2.1",
-    "node": "^24.15.0",
     "node-fetch": "^3.3.2",
     "zod": "^4.3.6"
   }

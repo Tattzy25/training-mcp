@@ -5,8 +5,10 @@ import { z } from "zod";
 // Import Express types correctly
 import type { Request, Response } from "express";
 
-// Enable debug logging to see what's happening
-process.env.DEBUG = "mcp:*";
+// Keep production logging quiet unless DEBUG is explicitly set.
+if (process.env.NODE_ENV !== "production") {
+  process.env.DEBUG ??= "mcp:*";
+}
 
 const app = express();
 app.use(express.json());
@@ -106,7 +108,7 @@ app.delete('/mcp', async (req: Request, res: Response) => {
 });
 
 // Start the server
-const PORT = process.env.MCP_SERVER_PORT || 4000;
+const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
   console.log(`MCP Stateless Streamable HTTP Server listening on port ${PORT}`);
 });
