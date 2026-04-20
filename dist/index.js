@@ -2,6 +2,8 @@ import express from "express";
 import { McpServer, ResourceTemplate } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import { z } from "zod";
+const FileCtor = globalThis.File;
+const fileLikeSchema = typeof FileCtor === "function" ? z.instanceof(FileCtor) : z.any();
 // Keep production logging quiet unless DEBUG is explicitly set.
 if (process.env.NODE_ENV !== "production") {
     process.env.DEBUG ??= "mcp:*";
@@ -113,8 +115,8 @@ async function makeAPIRequest(url, method, body) {
 // Register upload training data tool
 // @ts-ignore
 server.tool("upload-training-data", "Upload training data files (zip and cover image)", {
-    trainingData: z.instanceof(File).describe("The zip file containing training data"),
-    coverImage: z.instanceof(File).describe("The cover image file"),
+    trainingData: fileLikeSchema.describe("The zip file containing training data"),
+    coverImage: fileLikeSchema.describe("The cover image file"),
 }, async ({ trainingData, coverImage }) => {
     const formData = new FormData();
     formData.append("trainingData", trainingData);

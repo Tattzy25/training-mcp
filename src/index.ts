@@ -5,6 +5,10 @@ import { z } from "zod";
 // Import Express types correctly
 import type { Request, Response } from "express";
 
+const FileCtor: unknown = (globalThis as unknown as { File?: unknown }).File;
+const fileLikeSchema =
+  typeof FileCtor === "function" ? z.instanceof(FileCtor as any) : z.any();
+
 // Keep production logging quiet unless DEBUG is explicitly set.
 if (process.env.NODE_ENV !== "production") {
   process.env.DEBUG ??= "mcp:*";
@@ -151,8 +155,8 @@ server.tool(
   "upload-training-data",
   "Upload training data files (zip and cover image)",
   {
-    trainingData: z.instanceof(File).describe("The zip file containing training data"),
-    coverImage: z.instanceof(File).describe("The cover image file"),
+    trainingData: fileLikeSchema.describe("The zip file containing training data"),
+    coverImage: fileLikeSchema.describe("The cover image file"),
   },
   async ({ trainingData, coverImage }) => {
     const formData = new FormData();
