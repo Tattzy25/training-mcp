@@ -112,7 +112,7 @@ app.listen(PORT, () => {
 });
 
 // Base URL for the model-training API
-const API_URL = process.env.MCP_API_URL || "https://api.example.com";
+const API_URL = process.env.MCP_API_URL || "https://training-mcp-production.up.railway.app";
 
 // Helper function for making API requests
 async function makeAPIRequest<T>(url: string, method: string, body?: FormData): Promise<T | null> {
