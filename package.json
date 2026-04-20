@@ -6,7 +6,8 @@
   "version": "1.0.0",
   "description": "model training mcp server",
   "scripts": {
-    "dev": "node --loader ts-node/esm src/index.ts"
+    "dev": "node --loader ts-node/esm src/index.ts",
+    "start": "node index.js"
   },
   "engines": {
     "node": ">=18.0.0"
